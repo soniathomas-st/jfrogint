@@ -1,0 +1,24 @@
+resources:
+  - name: my_source_repo
+    type: GitRepo
+    configuration:
+      gitProvider: myGitHub
+      path: mycompany/myrepository
+      branches:
+        include: master
+      buildOn:
+        commit: false
+        pullRequestCreate: true
+      cancelPendingRunsOn:
+        pullRequestUpdate: true
+pipelines:     
+  - name: pipeline_gitrepo_trigger
+    steps:
+      - name: gitrepo_trigger_step_1
+        type: Bash
+        configuration:
+          inputResources:
+            - name: my_source_repo
+        execution:
+          onExecute:
+            - printenv   
