@@ -2,23 +2,29 @@ resources:
   - name: my_source_repo
     type: GitRepo
     configuration:
-      gitProvider: myGitHub
-      path: mycompany/myrepository
+      gitProvider: myGitHubIntegration
+      path: soniathomas-st/jfrogint
       branches:
-        include: master
+        include: tree/develop
       buildOn:
-        commit: false
-        pullRequestCreate: true
-      cancelPendingRunsOn:
-        pullRequestUpdate: true
+        commit: true
 pipelines:     
-  - name: pipeline_gitrepo_trigger
+  - name: demo_pipeline
     steps:
-      - name: gitrepo_trigger_step_1
-        type: Bash
+      - name: step_1_npm_build
+        type: NpmBuild
         configuration:
+          npmArgs: --no-progress --no-audit
+          sourceLocation: .
+          repositoryName: npm-dev-virtual
           inputResources:
             - name: my_source_repo
+          integrations:
+            - name: myArtifactory
         execution:
-          onExecute:
-            - printenv   
+          onStart:
+            - echo "Starting the npm install..."
+          onSuccess:
+            - echo "npm install completed"
+          onFailure:
+            - echo "uh oh, something went wrong during npm install"
